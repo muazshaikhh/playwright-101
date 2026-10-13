@@ -97,7 +97,6 @@ test.describe('Ontario.ca Search', () => {
   });
 
   test('topic filter decreases result count', async ({ page }) => {
-    console.log('CI pipeline verification');
     await page.goto('/search?query=driver+licence');
     await page.waitForSelector('h4 a');
 
