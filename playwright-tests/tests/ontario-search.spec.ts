@@ -95,4 +95,24 @@ test.describe('Ontario.ca Search', () => {
     await page.waitForSelector('h4 a');
     await expect(page.locator('h4 a').first()).toBeVisible();
   });
+
+  test('topic filter decreases result count', async ({ page }) => {
+    console.log('CI pipeline verification');
+    await page.goto('/search?query=driver+licence');
+    await page.waitForSelector('h4 a');
+
+    const resultsHeader = page.locator('h3').filter({ hasText: /results/ });
+    const beforeText = await resultsHeader.textContent();
+    const beforeCount = parseInt(beforeText?.match(/\d+/)?.[0] ?? '0');
+
+    await page.locator('label').filter({ hasText: /driving/i }).first().click();
+    await page.locator('#filterSortApply').click();
+    await page.waitForSelector('h4 a');
+
+    const afterText = await resultsHeader.textContent();
+    const afterCount = parseInt(afterText?.match(/\d+/)?.[0] ?? '0');
+
+    expect(afterCount).toBeLessThan(beforeCount);
+});
+
 });
